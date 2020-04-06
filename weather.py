@@ -43,6 +43,8 @@ def print_weather(current_weather):
 
 def main():
     print("\n")
+    print("Getting weather information for your area...\n")
+    time.sleep(2)
     print("Current weather in your area:\n")
     ip_address = get_IP()
     weather = get_weather(ip_address)
