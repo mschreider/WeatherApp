@@ -5,7 +5,7 @@ www.github.com/mschreider
 
 import urllib.request, urllib.parse
 import json
-import time
+import time, sys
 
 def get_IP():
     url = "http://checkip.dyndns.org"
@@ -43,8 +43,14 @@ def print_weather(current_weather):
 
 def main():
     print("\n")
-    print("Getting weather information for your area...\n")
-    time.sleep(2)
+    end_time = time.time() + 5
+    while time.time() < end_time:    # performs while loop for 5 seconds
+        for x in range(0,5):
+            print("Getting weather information for your area%s" % ("."*x), end="\r")
+            time.sleep(0.3)
+            sys.stdout.write('\033[K\033[G')
+            if x == 4:
+                x=0
     print("Current weather in your area:\n")
     ip_address = get_IP()
     weather = get_weather(ip_address)
