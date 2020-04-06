@@ -1,31 +1,28 @@
-"""
-Written by Matthew Schreider
-www.github.com/mschreider
-"""
-
 import urllib.request, urllib.parse
 import json
 import time, sys
 
 def get_IP():
     url = "http://checkip.dyndns.org"
-    # .decode(utf-8) converts from 'bytes' to 'str'
-    data = urllib.request.urlopen(url).read().decode('utf-8')   
-    # Parse 76th to 90th index of str
-    ip_address = data[76:90]
+    data = urllib.request.urlopen(url).read().decode('utf-8')   # .decode(utf-8) converts from 'bytes' to 'str'
+    # print(type(data))
+    ip_address = data[76:90]    # Parse 76th to 90th index of str
     return ip_address
 
-def get_weather(ip_address):
+def get_information(ip_address):
     key = "key=d3dc97f5adf0499894b215338200504"
-    url = "http://api.worldweatheronline.com/premium/v1/weather.ashx?" + key + "&q="+ ip_address + "&format=json&num_of_days=0"
+    url = "http://api.worldweatheronline.com/premium/v1/weather.ashx?" + key + "&q="+ ip_address + "&format=json&num_of_days=0&includelocation=yes"
     data = urllib.request.urlopen(url).read()   
-    #converts to json file
-    json_data = json.loads(data)
-    # with open("weather_data.json", 'w') as file:
+    json_data = json.loads(data)    #converts to json file
+    # with open("weather_data.json", 'x') as file:
     #     json.dump(json_data, file)
     current_weather = json_data['data']['current_condition'][0]
-    return current_weather  
+    current_location = json_data['data']['nearest_area'][0]
+    return current_weather, current_location
 
+def print_location(current_location):
+    print("%s, %s, %s\n" % (current_location['areaName'][0]['value'], current_location['region'][0]['value'], current_location['country'][0]['value']))
+    
 def print_weather(current_weather):
     print("\tWeather: %s \n"
         "\tTemperature: %s °F \n"
@@ -43,7 +40,7 @@ def print_weather(current_weather):
 
 def main():
     print("\n")
-    end_time = time.time() + 5
+    end_time = time.time() + 4
     while time.time() < end_time:    # performs while loop for 5 seconds
         for x in range(0,5):
             print("Getting weather information for your area%s" % ("."*x), end="\r")
@@ -53,8 +50,9 @@ def main():
                 x=0
     print("Current weather in your area:\n")
     ip_address = get_IP()
-    weather = get_weather(ip_address)
-    time.sleep(1)
+    weather, location = get_information(ip_address)
+    print_location(location)
+    time.sleep(0.5)
     print_weather(weather)
     print("\n")
 
