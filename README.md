@@ -1,4 +1,4 @@
-# WeatherApp
+# WeatherAppScript
 
 **How it works:**  
 - Gets user location based on IP Address.  
